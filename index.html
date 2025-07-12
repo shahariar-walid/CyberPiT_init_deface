@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberPiT</title>
+    <link href="favicon.png" rel="icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop playsinline>
+        <source src="background.mp4" type="video/mp4">
+        <source src="background.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+    
+    <script>
+        // Ensure the video loops properly
+        const video = document.querySelector('video');
+        
+        video.addEventListener('loadeddata', function() {
+            video.play().catch(e => {
+                console.log('Autoplay failed:', e);
+                // Fallback: try to play on user interaction
+                document.addEventListener('click', () => {
+                    video.play();
+                }, { once: true });
+            });
+        });
+        
+        // Additional loop enforcement
+        video.addEventListener('ended', function() {
+            video.currentTime = 0;
+            video.play();
+        });
+    </script>
+</body>
+</html>
