@@ -22,31 +22,59 @@
     </style>
 </head>
 <body>
-    <video autoplay muted loop playsinline>
-        <source src="background.mp4" type="video/mp4">
-        <source src="background.webm" type="video/webm">
+    <video autoplay muted loop playsinline id="bgVideo">
+        <!-- Sources will be set dynamically via JavaScript -->
         Your browser does not support the video tag.
     </video>
     
     <script>
-        // Ensure the video loops properly
-        const video = document.querySelector('video');
+        const video = document.getElementById('bgVideo');
         
-        video.addEventListener('loadeddata', function() {
+        // Check if the device is a mobile/tablet
+        function isMobileOrTablet() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Set the correct video source based on device
+        function setVideoSource() {
+            const source = document.createElement('source');
+            
+            if (isMobileOrTablet()) {
+                // Mobile/Tablet version (background_2.mp4)
+                source.src = "background_2.mp4";
+                source.type = "video/mp4";
+            } else {
+                // Desktop version (background.mp4)
+                source.src = "background.mp4";
+                source.type = "video/mp4";
+            }
+            
+            // Clear existing sources and add the new one
+            video.innerHTML = '';
+            video.appendChild(source);
+            
+            // Try to autoplay
+            video.load(); // Reload the video with the new source
             video.play().catch(e => {
                 console.log('Autoplay failed:', e);
-                // Fallback: try to play on user interaction
+                // Fallback: play on user interaction
                 document.addEventListener('click', () => {
                     video.play();
                 }, { once: true });
             });
-        });
+        }
         
-        // Additional loop enforcement
+        // Initialize video source
+        setVideoSource();
+        
+        // Ensure the video loops properly
         video.addEventListener('ended', function() {
             video.currentTime = 0;
             video.play();
         });
+        
+        // Optional: Re-check on screen resize (e.g., if a tablet rotates)
+        window.addEventListener('resize', setVideoSource);
     </script>
 </body>
 </html>
